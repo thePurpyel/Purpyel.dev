@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WaterBot — Purpyel</title>
+<link rel="icon" type="image/png" href="/assets/purpyel-logo.svg">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Azeret+Mono:wght@300;400;500&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:           #0a0d14;
+    --bg2:          #10141f;
+    --bg3:          #161c2a;
+    --border:       rgba(255,255,255,0.07);
+    --border2:      rgba(255,255,255,0.13);
+    --text:         #e1eaf4;
+    --muted:        #7a8ea8;
+    --accent:       #00a8ff;
+    --accent2:      #0088cc;
+    --accent3:      #00d4ff;
+    --accent-glow:  rgba(0, 168, 255, 0.32);
+    --accent-glow2: rgba(0, 168, 255, 0.12);
+    --success:      #00d084;
+    --purple:       #9900ff;
+    --radius:       4px 14px 6px 10px / 8px 4px 12px 6px;
+    --radius-sm:    3px 8px 5px 6px / 6px 3px 8px 4px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Azeret Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; width: 100%; }
+
+  /* ── Background canvas + noise ── */
+  #network-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.55;
+  }
+
+  body > *:not(#network-canvas):not(nav):not(.nav-mobile-menu) { position: relative; z-index: 1; }
+
+  /* ── Nav (copied from index.html, accent adapted) ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    z-index: 100;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    background: rgba(10,13,20,0.90);
+    border-bottom: 1.5px solid rgba(0,168,255,0.14);
+    padding: 0 2rem;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  body { padding-top: 62px; }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.01em;
+    flex-shrink: 0;
+    transform: rotate(-1deg);
+    transition: transform 0.2s;
+  }
+  .nav-logo:hover { transform: rotate(0.5deg) scale(1.04); }
+  .nav-logo img {
+    width: 32px; height: 32px;
+    border-radius: 8px 4px 8px 4px;
+    object-fit: cover;
+  }
+  .nav-tabs {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex: 1;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    padding: 4px 14px;
+    font-size: 13px;
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color 0.2s, background 0.2s;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    border-radius: 3px 8px 4px 6px / 5px 3px 7px 4px;
+    position: relative;
+    letter-spacing: 0.02em;
+  }
+  .nav-tab::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 10%;
+    width: 0%; height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.25s ease;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab:hover::after { width: 80%; }
+  .nav-tab.active { color: var(--accent); }
+  .nav-tab.active::after { width: 80%; }
+
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px; height: 36px;
+    padding: 5px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: 4px 10px 5px 8px / 8px 4px 10px 5px;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-left: auto;
+    transition: border-color 0.2s;
+  }
+  .nav-hamburger:hover { border-color: rgba(0,168,255,0.5); }
+  .nav-hamburger span {
+    display: block; height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform 0.25s ease, opacity 0.25s ease, width 0.25s ease;
+    transform-origin: center;
+  }
+  .nav-hamburger span:nth-child(2) { width: 75%; }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; width: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .nav-mobile-menu {
+    display: none;
+    position: fixed;
+    top: 62px; left: 0;
+    width: 100%;
+    z-index: 99;
+    background: rgba(10,13,20,0.97);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1.5px solid rgba(0,168,255,0.18);
+    padding: 0.75rem 1rem 1rem;
+    transform: translateY(-8px);
+    opacity: 0;
+    transition: transform 0.22s ease, opacity 0.22s ease;
+    pointer-events: none;
+  }
+  .nav-mobile-menu.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .nav-mobile-item {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 0.5rem;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    cursor: pointer;
+    text-align: left;
+    letter-spacing: 0.02em;
+    transition: color 0.2s, padding-left 0.2s;
+  }
+  .nav-mobile-item:last-child { border-bottom: none; }
+  .nav-mobile-item:hover { color: var(--text); padding-left: 1rem; }
+  .nav-mobile-item.active { color: var(--accent); }
+
+  /* ── Layout ── */
+  main { max-width: 960px; margin: 0 auto; padding: 4rem 2rem 2rem; }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    padding: 3.5rem 2.5rem 3rem;
+    background: var(--bg2);
+    border: 1.5px solid rgba(0,168,255,0.2);
+    border-radius: 4px 18px 8px 14px / 10px 6px 16px 4px;
+    margin-bottom: 4rem;
+    overflow: hidden;
+    box-shadow: 4px 4px 0 0 rgba(0,168,255,0.1), -1px -1px 0 0 rgba(0,212,255,0.06);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.06;
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '◈';
+    position: absolute;
+    bottom: 1.2rem; right: 1.4rem;
+    font-size: 1rem;
+    color: var(--accent2);
+    opacity: 0.25;
+  }
+  /* Blue horizontal scan line */
+  .hero-scanline {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, var(--accent) 40%, var(--accent3) 60%, transparent 100%);
+    opacity: 0.5;
+  }
+  .hero-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent3) 55%, #fff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.9rem;
+  }
+  .hero-subtitle {
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.85;
+    max-width: 500px;
+  }
+  .hero-logo {
+    width: 110px; height: 110px;
+    border-radius: 16px 6px 16px 6px;
+    overflow: hidden;
+    border: 2px solid rgba(0,168,255,0.3);
+    background: var(--bg3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transform: rotate(1.5deg);
+    box-shadow: 3px 3px 0 rgba(0,168,255,0.14), 0 0 24px rgba(0,168,255,0.08);
+  }
+  .hero-logo img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-logo-placeholder {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── CTA buttons row ── */
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.6rem;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 22px;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 3px 10px 4px 8px / 8px 3px 10px 4px;
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+    border: none;
+    text-decoration: none;
+  }
+  .cta-primary {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    color: #fff;
+    box-shadow: 2px 3px 0 rgba(0,0,0,0.3);
+  }
+  .cta-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 3px 6px 0 rgba(0,0,0,0.3), 0 0 20px var(--accent-glow);
+  }
+  .cta-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1.5px solid rgba(0,168,255,0.3);
+  }
+  .cta-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 0 14px var(--accent-glow2);
+  }
+  .cta-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .cta-btn img { width: 20px; height: 20px; flex-shrink: 0; }
+
+  /* ── Section head ── */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .section-title {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    position: relative;
+    padding-bottom: 6px;
+  }
+  .section-title::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -2px;
+    width: 100%; height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    opacity: 0.45;
+    clip-path: polygon(0 0,4% 100%,8% 0,12% 100%,16% 0,20% 100%,24% 0,28% 100%,32% 0,36% 100%,40% 0,44% 100%,48% 0,52% 100%,56% 0,60% 100%,64% 0,68% 100%,72% 0,76% 100%,80% 0,84% 100%,88% 0,92% 100%,96% 0,100% 100%,100% 100%,0 100%);
+  }
+
+  /* ── About section ── */
+  #about-section { margin-bottom: 4rem; }
+  .about-card {
+    background: var(--bg2);
+    border: 1.5px solid rgba(0,168,255,0.15);
+    border-radius: 10px 4px 14px 6px / 4px 12px 6px 16px;
+    padding: 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 3px 4px 0 0 rgba(0,168,255,0.08);
+    transform: rotate(-0.15deg);
+  }
+  .about-card::before {
+    content: '';
+    position: absolute;
+    bottom: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.05;
+    pointer-events: none;
+  }
+  .about-intro {
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.9;
+    margin-bottom: 1.6rem;
+    max-width: 740px;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.9rem;
+  }
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 0.9rem 1.1rem;
+    background: var(--bg3);
+    border: 1px solid rgba(0,168,255,0.12);
+    border-radius: 3px 10px 4px 8px / 8px 3px 10px 4px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .feature-item:hover {
+    border-color: rgba(0,168,255,0.3);
+    transform: translateY(-2px);
+  }
+  .feature-icon {
+    width: 22px; height: 22px;
+  }
+  .feature-text {
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .feature-text strong {
+    display: block;
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    color: var(--accent3);
+    margin-bottom: 2px;
+  }
+
+  /* ── Screenshots ── */
+  #screenshots-section { margin-bottom: 4rem; }
+  .screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 1.2rem;
+  }
+  .screenshot-card {
+    background: var(--bg2);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    border-radius: 4px 14px 6px 10px / 10px 4px 12px 6px;
+    overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    box-shadow: 3px 4px 0 0 rgba(0,168,255,0.07);
+  }
+  .screenshot-card:nth-child(odd)  { transform: rotate(0.2deg); }
+  .screenshot-card:nth-child(even) { transform: rotate(-0.25deg); border-radius: 10px 4px 12px 6px / 4px 14px 6px 10px; }
+  .screenshot-card:hover {
+    border-color: rgba(0,168,255,0.4);
+    transform: translateY(-3px) rotate(0deg) !important;
+    box-shadow: 5px 8px 0 0 rgba(0,168,255,0.14), 0 0 24px rgba(0,168,255,0.07);
+  }
+  .screenshot-img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--bg3);
+    overflow: hidden;
+    position: relative;
+  }
+  .screenshot-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .screenshot-card:hover .screenshot-img img { transform: scale(1.05); }
+  .screenshot-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: rgba(0,168,255,0.2);
+  }
+  .screenshot-placeholder svg { width: 38px; height: 38px; opacity: 0.5; }
+  .screenshot-placeholder span {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.15);
+    font-family: 'Azeret Mono', monospace;
+  }
+
+  /* Mini bot-manager UI inside screenshot placeholder */
+  .mini-ui {
+    position: absolute;
+    inset: 0;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-family: 'Rajdhani', sans-serif;
+    overflow: hidden;
+  }
+  .mini-topbar {
+    height: 16px;
+    background: rgba(0,168,255,0.08);
+    border: 1px solid rgba(0,168,255,0.2);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 8px;
+  }
+  .mini-topbar-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); opacity: 0.5; }
+  .mini-topbar-text {
+    font-size: 7px;
+    color: var(--accent);
+    opacity: 0.6;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .mini-cards { display: flex; gap: 6px; flex: 1; }
+  .mini-card {
+    flex: 1;
+    background: rgba(0,168,255,0.05);
+    border: 1px solid rgba(0,168,255,0.15);
+    border-radius: 4px;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mini-card-dot {
+    position: absolute;
+    top: 6px; right: 7px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 6px var(--success);
+  }
+  .mini-card-dot.idle { background: #ff4757; box-shadow: 0 0 6px #ff4757; }
+  .mini-card-name { font-size: 8px; color: var(--text); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.8; }
+  .mini-card-line { height: 3px; border-radius: 2px; background: rgba(0,168,255,0.18); }
+  .mini-card-line.short { width: 55%; }
+  .mini-card-line.medium { width: 75%; }
+  .mini-card-btn {
+    margin-top: auto;
+    height: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 3px;
+    opacity: 0.5;
+  }
+
+  .mini-settings { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .mini-setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 8px;
+    background: rgba(0,168,255,0.04);
+    border: 1px solid rgba(0,168,255,0.1);
+    border-radius: 4px;
+  }
+  .mini-setting-label { font-size: 7px; color: var(--text); opacity: 0.5; letter-spacing: 0.5px; font-family: 'Azeret Mono', monospace; }
+  .mini-toggle {
+    width: 18px; height: 9px;
+    border-radius: 999px;
+    position: relative;
+  }
+  .mini-toggle.on  { background: rgba(0,168,255,0.3); border: 1px solid var(--accent); }
+  .mini-toggle.off { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); }
+  .mini-toggle::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  .mini-toggle.on::after  { left: auto; right: 1px; background: var(--accent); }
+  .mini-toggle.off::after { left: 1px; background: rgba(255,255,255,0.3); }
+
+  .screenshot-caption {
+    padding: 0.8rem 1.1rem;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .screenshot-caption strong {
+    font-family: 'Josefin Sans', sans-serif;
+    color: var(--text);
+    font-size: 13px;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* ── Links section ── */
+  #links-section { margin-bottom: 4rem; }
+  .links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.1rem;
+  }
+  .link-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.6rem 1.8rem;
+    background: var(--bg2);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    border-radius: 4px 14px 6px 10px / 10px 4px 12px 6px;
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    box-shadow: 3px 4px 0 0 rgba(0,168,255,0.06);
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .link-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .link-card:hover {
+    border-color: rgba(0,168,255,0.38);
+    transform: translateY(-3px);
+    box-shadow: 5px 8px 0 0 rgba(0,168,255,0.12), 0 0 24px rgba(0,168,255,0.06);
+  }
+  .link-card:hover::before { opacity: 1; }
+  .link-icon {
+    width: 42px; height: 42px;
+    border-radius: 8px 3px 8px 3px;
+    background: rgba(0,168,255,0.08);
+    border: 1px solid rgba(0,168,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .link-icon svg, .link-icon img { width: 20px; height: 20px; filter: none; }
+  .link-name {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.01em;
+  }
+  .link-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+  .link-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(0,168,255,0.08);
+    border: 1px solid rgba(0,168,255,0.22);
+    border-radius: 10px 3px 10px 3px / 3px 10px 3px 10px;
+    padding: 2px 9px;
+    width: fit-content;
+    font-family: 'Azeret Mono', monospace;
+  }
+
+  /* ── Installation section ── */
+  #install-section { margin-bottom: 4rem; }
+  .install-card {
+    background: var(--bg2);
+    border: 1.5px solid rgba(0,168,255,0.12);
+    border-radius: 4px 18px 8px 14px / 10px 6px 16px 4px;
+    padding: 2rem 2.5rem;
+    transform: rotate(0.1deg);
+    box-shadow: 3px 4px 0 0 rgba(0,168,255,0.06);
+    position: relative;
+    overflow: hidden;
+  }
+  .install-card::before {
+    content: '';
+    position: absolute;
+    top: -50px; left: -50px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.04;
+    pointer-events: none;
+  }
+  .install-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+  .install-step {
+    display: flex;
+    gap: 1.1rem;
+    align-items: flex-start;
+  }
+  .install-step-num {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 6px 3px 6px 3px;
+    background: rgba(0,168,255,0.1);
+    border: 1px solid rgba(0,168,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--accent);
+    margin-top: 1px;
+  }
+  .install-step-body { flex: 1; min-width: 0; }
+  .install-step-title {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.02em;
+    margin-bottom: 0.55rem;
+  }
+  .install-code {
+    background: var(--bg3);
+    border: 1px solid rgba(0,168,255,0.15);
+    border-radius: 3px 10px 4px 8px / 8px 3px 10px 4px;
+    padding: 0.75rem 1rem;
+    font-family: 'Azeret Mono', monospace;
+    font-size: 12.5px;
+    color: var(--accent3);
+    line-height: 1.75;
+    position: relative;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .install-code-copy {
+    position: absolute;
+    top: 0.5rem; right: 0.6rem;
+    padding: 2px 9px;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border2);
+    border-radius: 3px 6px 3px 6px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    text-transform: uppercase;
+  }
+  .install-code-copy:hover { color: var(--accent); border-color: rgba(0,168,255,0.35); }
+  .install-divider {
+    height: 1px;
+    background: rgba(0,168,255,0.08);
+    margin: 0.4rem 0 0;
+  }
+  /* Usage block */
+  .install-usage {
+    margin-top: 2rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid rgba(0,168,255,0.1);
+  }
+  .install-usage-title {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+    opacity: 0.75;
+  }
+  .install-usage-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.85;
+  }
+  .install-usage-text code {
+    font-family: 'Azeret Mono', monospace;
+    font-size: 12px;
+    color: var(--accent3);
+    background: rgba(0,212,255,0.07);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 3px;
+    padding: 1px 6px;
+  }
+
+  /* ── Footer (copied from index.html) ── */
+  footer {
+    border-top: 1.5px solid rgba(0,168,255,0.1);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .footer-brand {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--muted);
+    display: inline-block;
+  }
+  .footer-links {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .footer-sep { color: rgba(255,255,255,0.15); font-size: 12px; }
+  .footer-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 5px 12px;
+    border-radius: 3px 8px 4px 6px / 6px 3px 8px 4px;
+    border: 1px solid var(--border);
+    transition: color 0.2s, border-color 0.2s, transform 0.2s;
+  }
+  .footer-link:hover {
+    color: var(--text);
+    border-color: rgba(0,168,255,0.3);
+    transform: translateY(-1px);
+  }
+  .footer-link svg { width: 15px; height: 15px; }
+  .footer-link img { width: 15px; height: 15px; filter: brightness(0) invert(1) opacity(0.55); transition: filter 0.2s; }
+  .footer-link:hover img { filter: brightness(0) invert(1) opacity(0.9); }
+
+  /* ── Animations ── */
+  .anim-in {
+    opacity: 0;
+    transform: translateY(16px) rotate(0.4deg);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .anim-in.visible {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-logo { width: 72px; height: 72px; align-self: start; }
+    .hero-title { font-size: 3rem; }
+    .screenshots-grid { grid-template-columns: 1fr; }
+    .links-grid { grid-template-columns: 1fr; }
+    nav { padding: 0 1rem; gap: 1rem; }
+    main { padding: 2rem 1rem; }
+    footer { padding: 2rem 1rem; }
+    .nav-tabs { display: none; }
+    .nav-hamburger { display: flex; }
+    .nav-mobile-menu { display: block; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="network-canvas"></canvas>
+
+<!-- ── Nav ── -->
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="/assets/purpyel-logo.svg" alt="Purpyel">
+  </a>
+  <div class="nav-tabs" id="nav-tabs"></div>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu" aria-hidden="true">
+  <div id="nav-mobile-inner"></div>
+</div>
+
+<main>
+
+  <!-- ── Hero ── -->
+  <section id="hero" style="margin-bottom:0">
+    <div class="hero anim-in">
+      <div class="hero-scanline"></div>
+      <div class="hero-left">
+        <h1 class="hero-title">WaterBot</h1>
+        <p class="hero-subtitle">
+          WaterBot is an all-in-one software for creating, managing, and hosting your very own AI Discord bots
+        </p>
+        <div class="cta-row">
+          <a class="cta-btn cta-primary" href="#install-section">
+            <img src="/assets/icons/download.svg" alt="Download">
+            Install Instructions
+          </a>
+          <a class="cta-btn cta-secondary" href="https://github.com/Nerdlabs-AI-DC/WaterBot" target="_blank" rel="noopener">
+            <img src="/assets/github.svg" alt="GitHub">
+            GitHub
+          </a>
+          <a class="cta-btn cta-secondary" href="https://discord.gg/rkSKtdW99R" target="_blank" rel="noopener">
+            <img src="/assets/discord.svg" alt="Discord">
+            Discord
+          </a>
+        </div>
+      </div>
+      <div class="hero-logo">
+        <img src="/assets/waterbot/waterbot-square.avif" alt="WaterBot logo" onerror="this.parentElement.innerHTML='<span class=hero-logo-placeholder>WB</span>'">
+      </div>
+    </div>
+  </section>
+
+  <!-- ── About ── -->
+  <section id="about-section">
+    <div class="section-head">
+      <h2 class="section-title">About</h2>
+    </div>
+    <div class="about-card anim-in">
+      <p class="about-intro">
+        WaterBot is an all-in-one software for creating, managing, and hosting your very own AI Discord bots.
+        Whether you want a fun chatbot to spice up your server, a helpful assistant to help your community, or a specialized AI tool for a specific task, WaterBot makes it simple to bring your idea to life without needing to code.
+      </p>
+      <div class="features-grid">
+        <div class="feature-item">
+          <img src="/assets/icons/list-tree.svg" class="feature-icon">
+          <div class="feature-text">
+            <strong>User-Friendly Design</strong>
+            WaterBot is designed with ease of use in mind.
+            The clean, modern interface makes creating and managing bots a easy, even if you don't know how to code.
+            The dashboard provides quick access to bot status, start/stop controls, logs, statistics, and settings.
+          </div>
+        </div>
+        <div class="feature-item">
+          <img src="/assets/icons/brush.svg" class="feature-icon">
+          <div class="feature-text">
+            <strong>Great Customizability</strong>
+            You can tweak everything from the system prompt and personality to advanced memory and behavior settings.
+          </div>
+        </div>
+        <div class="feature-item">
+          <img src="/assets/icons/cpu.svg" class="feature-icon">
+          <div class="feature-text">
+            <strong>Multiple AI Providers</strong>
+            WaterBot currently supports OpenAI, OpenRouter, and Ollama for local AI hosting, with more providers on the way.
+          </div>
+        </div>
+        <div class="feature-item">
+          <img src="/assets/icons/computer.svg" class="feature-icon">
+          <div class="feature-text">
+            <strong>Local & Secure</strong>
+            WaterBot runs entirely on your devices, whether it’s your personal computer or a powerful server.
+            This means you’re not depending on external servers, and your important information stays safe on your own hardware.
+          </div>
+        </div>
+        <div class="feature-item">
+          <img src="/assets/icons/chart-no-axes-combined.svg" class="feature-icon">
+          <div class="feature-text">
+            <strong>Performance Monitoring</strong>
+            Keep an eye on CPU usage, memory usage, engagement metrics, growth statistics, and overall system status directly from the dashboard.
+            Detailed logs also make debugging easy.
+          </div>
+        </div>
+        <div class="feature-item">
+          <img src="/assets/icons/bot.svg" class="feature-icon">
+          <div class="feature-text">
+            <strong>Many Use Cases</strong>
+            Use them for casual chatting, productivity tools, customer support, private assistants, server utilities, or fully custom AI experiences for a specific purpose.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Screenshots ── -->
+  <section id="screenshots-section">
+    <div class="section-head">
+      <h2 class="section-title">Screenshots</h2>
+    </div>
+    <div class="screenshots-grid">
+
+      <!-- Bot Manager -->
+      <div class="screenshot-card anim-in">
+        <div class="screenshot-img">
+          <img src="/assets/waterbot/screenshots/bot-manager.avif" alt="Bot manager dashboard">
+        </div>
+        <div class="screenshot-caption">
+          <strong>Main Dashboard</strong>
+          Overview of all your bots with status indicators and quick controls
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="screenshot-card anim-in">
+        <div class="screenshot-img">
+          <img src="/assets/waterbot/screenshots/bot-settings.avif" alt="Bot settings">
+        </div>
+        <div class="screenshot-caption">
+          <strong>Bot Settings</strong>
+          Per-bot configuration: AI model, system prompt, advanced settings, and more
+        </div>
+      </div>
+
+      <!-- Onboarding -->
+      <div class="screenshot-card anim-in">
+        <div class="screenshot-img">
+          <img src="/assets/waterbot/screenshots/onboarding.avif" alt="Onboarding screen">
+        </div>
+        <div class="screenshot-caption">
+          <strong>Onboarding</strong>
+          Simple setup process with guided onboarding to get you started quickly
+        </div>
+      </div>
+
+      <div class="screenshot-card anim-in">
+        <div class="screenshot-img">
+          <img src="/assets/waterbot/screenshots/bot-creation.avif" alt="Bot creation screen">
+        </div>
+        <div class="screenshot-caption">
+          <strong>Bot Creation</strong>
+          Create new bots in seconds with the simple bot creation interface
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Installation ── -->
+  <section id="install-section">
+    <div class="section-head">
+      <h2 class="section-title">Installation</h2>
+    </div>
+    <div class="install-card anim-in">
+      <div class="install-steps">
+
+        <div class="install-step">
+          <div class="install-step-num">1</div>
+          <div class="install-step-body">
+            <div class="install-step-title">Clone the repository</div>
+            <div class="install-code"><button class="install-code-copy" onclick="copyCode(this)">copy</button>git clone https://github.com/Nerdlabs-AI-DC/WaterBot.git
+cd WaterBot</div>
+          </div>
+        </div>
+
+        <div class="install-divider"></div>
+
+        <div class="install-step">
+          <div class="install-step-num">2</div>
+          <div class="install-step-body">
+            <div class="install-step-title">Install dependencies</div>
+            <div class="install-code"><button class="install-code-copy" onclick="copyCode(this)">copy</button>chmod +x install.sh
+./install.sh</div>
+          </div>
+        </div>
+
+        <div class="install-divider"></div>
+
+        <div class="install-step">
+          <div class="install-step-num">3</div>
+          <div class="install-step-body">
+            <div class="install-step-title">Start WaterBot</div>
+            <div class="install-code"><button class="install-code-copy" onclick="copyCode(this)">copy</button>waterbot</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="install-usage">
+        <div class="install-usage-title">// Usage</div>
+        <p class="install-usage-text">
+          Once WaterBot is running, open the URL provided in the terminal to start the setup.<br>
+          After completing the setup, you can create your first bot by pressing the big <code>Create New Bot</code> button.<br><br>
+        </p>
+        <div class="install-divider"></div>
+        <p class="install-usage-text">
+          <br>Note: Make sure that you have Python 3.10+ installed along with pip and venv. Any Linux distro should work, although not all distros have been tested. Operating systems other than Linux are currently not supported.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Links ── -->
+  <section id="links-section">
+    <div class="section-head">
+      <h2 class="section-title">Links</h2>
+    </div>
+    <div class="links-grid">
+
+      <a class="link-card anim-in" href="https://github.com/Nerdlabs-AI-DC/WaterBot" target="_blank" rel="noopener">
+        <div class="link-icon">
+          <img src="/assets/icons/github-blue.svg" alt="GitHub">
+        </div>
+        <div class="link-name">GitHub</div>
+        <div class="link-desc">Check out the WaterBot source code on GitHub</div>
+      </a>
+
+      <a class="link-card anim-in" href="https://discord.gg/rkSKtdW99R" target="_blank" rel="noopener">
+        <div class="link-icon">
+          <img src="/assets/icons/discord-blue.svg" alt="Discord">
+        </div>
+        <div class="link-name">Discord</div>
+        <div class="link-desc">Join the NerdLabs AI Discord server</div>
+      </a>
+
+      <a class="link-card anim-in" href="https://github.com/Nerdlabs-AI-DC/WaterBot/releases" target="_blank" rel="noopener">
+        <div class="link-icon">
+          <img src="/assets/icons/download-blue.svg" alt="Download">
+        </div>
+        <div class="link-name">Releases</div>
+        <div class="link-desc">Check out all releases and updates for WaterBot</div>
+      </a>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-brand">Purpyel</div>
+  <div class="footer-links" id="footer-links">
+    <a class="footer-link" href="https://github.com/thePurpyel" target="_blank" rel="noopener">
+      <img src="/assets/github.svg" alt="GitHub"> GitHub
+    </a>
+    <span class="footer-sep">|</span>
+    <a class="footer-link" href="https://discord.gg/rkSKtdW99R" target="_blank" rel="noopener">
+      <img src="/assets/discord.svg" alt="Discord"> Discord
+    </a>
+  </div>
+</footer>
+
+<script>
+const NAV_TABS = [
+  { label: "Home",      url: "/" },
+  { label: "NerdLabs AI", url: "/nerdlabs" },
+  { label: "WaterBot",  url: "#hero", active: true },
+];
+
+const navTabs = document.getElementById('nav-tabs');
+const navMobileInner = document.getElementById('nav-mobile-inner');
+
+function navTabAction(url, e) {
+  if (url.startsWith('#')) {
+    document.getElementById(url.slice(1))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    window.location.href = url;
+  }
+  closeMobileMenu();
+}
+
+NAV_TABS.forEach(tab => {
+  const btn = document.createElement('button');
+  btn.className = 'nav-tab' + (tab.active ? ' active' : '');
+  btn.textContent = tab.label;
+  btn.addEventListener('click', e => navTabAction(tab.url, e));
+  navTabs.appendChild(btn);
+
+  const mBtn = document.createElement('button');
+  mBtn.className = 'nav-mobile-item' + (tab.active ? ' active' : '');
+  mBtn.textContent = tab.label;
+  mBtn.addEventListener('click', e => navTabAction(tab.url, e));
+  navMobileInner.appendChild(mBtn);
+});
+
+const hamburger = document.getElementById('nav-hamburger');
+const mobileMenu = document.getElementById('nav-mobile-menu');
+
+function closeMobileMenu() {
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  hamburger.setAttribute('aria-expanded', 'false');
+  mobileMenu.setAttribute('aria-hidden', 'true');
+}
+
+hamburger.addEventListener('click', () => {
+  const isOpen = mobileMenu.classList.contains('open');
+  if (isOpen) { closeMobileMenu(); }
+  else {
+    hamburger.classList.add('open');
+    mobileMenu.classList.add('open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    mobileMenu.setAttribute('aria-hidden', 'false');
+  }
+});
+
+document.addEventListener('click', e => {
+  if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) closeMobileMenu();
+});
+
+/* Intersection observer for anim-in */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.07 });
+document.querySelectorAll('.anim-in').forEach(el => obs.observe(el));
+
+/* Copy code blocks */
+function copyCode(btn) {
+  const block = btn.parentElement;
+  const text = block.textContent.replace(/^\s*copy\s*/i, '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'copied!';
+    btn.style.color = 'var(--success)';
+    btn.style.borderColor = 'var(--success)';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 1800);
+  });
+}
+
+
+(function initNetwork() {
+  const canvas = document.getElementById('network-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  const COUNT = 55;
+  const MAX_DIST = 140;
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function makeParticle() {
+    return {
+      x:  Math.random() * canvas.width,
+      y:  Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.38,
+      vy: (Math.random() - 0.5) * 0.38,
+      r:  Math.random() * 1.8 + 0.6
+    };
+  }
+
+  function init() {
+    resize();
+    particles = [];
+    for (let i = 0; i < COUNT; i++) particles.push(makeParticle());
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (const p of particles) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width)  p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    }
+
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const a = particles[i], b = particles[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < MAX_DIST) {
+          const alpha = (1 - dist / MAX_DIST) * 0.22;
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(0, 168, 255, ${alpha})`;
+          ctx.lineWidth = 0.8;
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    for (const p of particles) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0, 168, 255, 0.45)';
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  init();
+  draw();
+})();
+</script>
+</body>
+</html>
