@@ -466,7 +466,7 @@ Furthermore, thanks to [M16 Studios](https://www.thingiverse.com/M16_Studios) fo
     <div class="section-head">
       <h2 class="section-title">The Journey</h2>
     </div>
-    <div class="story-container anim-in" id="story-container">
+    <div class="story-container" id="story-container">
       <div class="story-content" id="story-content"></div>
     </div>
   </section>
@@ -670,12 +670,7 @@ function parseInlineMarkdown(text) {
 
 const storyContentEl = document.getElementById('story-content');
 if (storyContentEl && STORY) {
-  try {
-    storyContentEl.innerHTML = renderStoryMarkdown(STORY);
-  } catch (e) {
-    console.error('Error rendering story:', e);
-    storyContentEl.innerHTML = '<p>Error loading story. Please try again later.</p>';
-  }
+  storyContentEl.innerHTML = renderStoryMarkdown(STORY);
 }
 
 initShared();
