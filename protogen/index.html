@@ -207,7 +207,7 @@ const PROJECT = {
   event:    'HDCC summer 2026',
   deadline: 'June 20, 2026',
   tech:     '3D printed base, LED matrix displays, Raspberry Pi 4',
-  details:  'This project is a full protogen head built from scratch. The base is 3D printed, with two 64x32 LED matrix panels mounted on the front as the face. A Raspberry Pi 4 drives the display. The goal is to have it finished and wearable for HDCC summer 2026.',
+  details:  'This project is a full protogen head built from scratch. The base is 3D printed, with two 64x32 LED matrix panels mounted on the front as the face. A Raspberry Pi 4 drives the display. I made this for HDCC summer 2026.',
 };
 
 const UPDATES = [
@@ -442,7 +442,6 @@ Furthermore, thanks to [M16 Studios](https://www.thingiverse.com/M16_Studios) fo
       <div class="hero-left">
         <h1 class="hero-title" id="banner-title-el">—</h1>
         <p class="hero-subtitle" id="banner-desc-el">—</p>
-        <div class="cta-row" id="cta-row-el"></div>
       </div>
       <div class="hero-logo" id="banner-img-el">
         <span class="hero-logo-placeholder">P</span>
@@ -475,7 +474,7 @@ Furthermore, thanks to [M16 Studios](https://www.thingiverse.com/M16_Studios) fo
   <!-- ── Updates ── -->
   <section id="updates-section">
     <div class="section-head">
-      <h2 class="section-title">Updates</h2>
+      <h2 class="section-title">Updates (old)</h2>
     </div>
     <div class="update-list" id="update-list"></div>
   </section>
@@ -496,12 +495,6 @@ if (PROJECT.image) {
   document.getElementById('banner-img-el').innerHTML =
     `<img src="${PROJECT.image}" alt="${PROJECT.title}">`;
 }
-
-const ctaRow = document.getElementById('cta-row-el');
-const statusChip = document.createElement('span');
-statusChip.className = 'banner-tag';
-statusChip.textContent = 'in progress';
-ctaRow.appendChild(statusChip);
 
 if (PROJECT.url) {
   const a = document.createElement('a');
