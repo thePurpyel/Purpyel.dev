@@ -670,7 +670,12 @@ function parseInlineMarkdown(text) {
 
 const storyContentEl = document.getElementById('story-content');
 if (storyContentEl && STORY) {
-  storyContentEl.innerHTML = renderStoryMarkdown(STORY);
+  try {
+    storyContentEl.innerHTML = renderStoryMarkdown(STORY);
+  } catch (e) {
+    console.error('Error rendering story:', e);
+    storyContentEl.innerHTML = '<p>Error loading story. Please try again later.</p>';
+  }
 }
 
 initShared();
