@@ -43,6 +43,75 @@
     font-size: 1.1rem; font-weight: 600; color: var(--text); line-height: 1.4;
   }
 
+  /* ── Story section ── */
+  #story-section { margin-bottom: 4rem; }
+  .story-container {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.8rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+  .story-content {
+    font-size: 14px; line-height: 1.8; color: var(--muted);
+  }
+  .story-content h1,
+  .story-content h2,
+  .story-content h3,
+  .story-content h4,
+  .story-content h5,
+  .story-content h6 {
+    font-family: 'Josefin Sans', sans-serif; color: var(--text);
+    margin-top: 1.8em; margin-bottom: 0.8em;
+  }
+  .story-content h1 { font-size: 2rem; font-weight: 700; }
+  .story-content h2 { font-size: 1.65rem; font-weight: 700; }
+  .story-content h3 { font-size: 1.4rem; font-weight: 600; }
+  .story-content h4 { font-size: 1.2rem; font-weight: 600; }
+  .story-content p {
+    margin-bottom: 1.2em;
+  }
+  .story-content a {
+    color: var(--accent); text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .story-content a:hover { opacity: 0.8; }
+  .story-content strong, .story-content b { color: var(--text); font-weight: 600; }
+  .story-content em, .story-content i { font-style: italic; opacity: 0.9; }
+  .story-content code {
+    font-family: 'Azeret Mono', monospace; font-size: 12.5px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.1em 0.4em;
+  }
+  .story-content pre {
+    font-family: 'Azeret Mono', monospace; font-size: 12.5px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.2rem;
+    overflow-x: auto; margin-bottom: 1.2em;
+  }
+  .story-content pre code { background: none; border: none; padding: 0; }
+  .story-content ul,
+  .story-content ol {
+    margin-bottom: 1.2em; padding-left: 2em;
+  }
+  .story-content li { margin-bottom: 0.4em; }
+  .story-content blockquote {
+    border-left: 3px solid var(--accent); padding-left: 1rem;
+    margin-left: 0; margin-bottom: 1.2em;
+    color: var(--muted); opacity: 0.8;
+    font-style: italic;
+  }
+  .story-content hr {
+    border: none; border-top: 1px solid var(--border);
+    margin: 2em 0;
+  }
+  .story-image {
+    width: 100%; max-width: 100%; height: auto;
+    border-radius: var(--radius); margin: 1.5em 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  }
+  .story-image-center {
+    display: block; margin-left: auto; margin-right: auto;
+  }
+
   /* ── Updates timeline ── */
   #updates-section { margin-bottom: 4rem; }
   .update-list {
@@ -215,6 +284,141 @@ const UPDATES = [
     image: '/assets/protogen/updates/protogen-display.avif',
   },
 ];
+
+const STORY = `
+![banner](/assets/protogen/updates/protogen-finished.avif)
+# Creating a protogen head
+February 2026, my friends asked me to join them as they wanted to go to comic con as protogens. I, of course, said yes, and so began the journey to make a protogen head.
+## Research
+I had no experience with fursuits, and especially protogens, going into this. Luckily, my friend Willem has a good amount of experience with making fursuits; however, none of us knew how to make a protogen. After some research, I could find a helpful YouTube tutorial and a few Reddit threads that could help us get started.
+
+I put together a basic list of parts and decided to get started with 3D printing the base shortly after.
+## 3D Printing
+I decided on M16 Studios' Protogen mk3 from Thingiverse as the base. 3D printing the parts was quite straightforward but also time-consuming. Thankfully, I was able to use DAF's (Digital Art Factory) 3D printers to print everything.
+
+Some things didn't go entirely smoothly, like the front frame for example, which didn't fit on the build plate, so I had to print it in two parts and connect them together. But I was able to finish printing everything well in time.
+![3d printed part](/assets/protogen/story/protogen-3d-print.avif)
+## Part Selection
+I mostly copied the part configuration from a YouTube video: Raspberry Pi, RGB Matrix Bonnet, 64x32 RGB LED Matrix displays.
+
+One thing that I did have to figure out myself was power, which I couldn't really find a clear and affordable solution for online. I wanted to use a power bank, but most of them wouldn't be able to supply both displays with enough power at the same time, in theory.
+
+I ended up buying some USB-C screw terminals, planning on using them to connect the displays to a suitable and affordable power bank once I could find one.
+
+You can find the entire list of parts that I ended up using at the bottom of the page.
+![display boxes](/assets/protogen/story/protogen-parts.avif)
+## Ordering the Fur
+For the fur, I ordered some long-haired purple and pink fur from a webshop called fakefurshop.com.
+
+I first ordered some samples, which looked great and didn't have any issues. I then ordered the full 1 m² pieces of purple and pink fur. They arrived in a couple of days with no issues, and they were even bigger than I expected.
+![fur](/assets/protogen/story/protogen-fur-order.avif)
+## The Electronics
+May 6, 2026, It has been about a month since I last worked on this project. I decided to start working on getting the electronics to work, all of which had arrived at this point.
+
+I was able to get the display to turn on, but it wouldn't display the image properly.
+
+The next day, I managed to fix this by using the proper command flags. The displays were working! I later tested with both of the two displays, which also worked well.
+
+I did a test using my small power bank that I already had to see if it would work, and to my surprise, it worked without any issues, meaning that I didn't have to buy an expensive power bank. I wasn't expecting this to work since the displays draw up to 2.5A at 5V each, and the power bank can only output 3A at 5V, which is almost half of what I theoretically need.
+![working displays](/assets/protogen/updates/protogen-display.avif)
+## Base assembly
+I put together all of the 3D-printed parts to make the "skeleton" of the head. I already helped with the assembly of my friend's protogen head base a few weeks prior, so I could use my experience from that and get it right the first try.
+
+Most parts are held together by 3D printing scraps, melted between parts to create some sort of "bridge." But I also used a bit of hot glue and superglue on the parts where the other method wasn't ideal.
+
+I used some body filler to fill in the otherwise visible gaps between parts before sanding it and spray-painting the outside.
+![head base](/assets/protogen/updates/protogen-base-2.avif)
+## The Ears and the Fur
+For the ears, I drew a simple triangular outline on a block of foam and cut it out with a saw. I then sculpted it into a nice ear shape with some scissors.
+
+For the fur, I covered the back of the head, where I wanted the fur to be, with plastic foil and duct tape. This then allowed me to remove the foil & tape layer and use it as an accurate outline for the fur that I will cut into shape.
+
+I had to cut the measurement layer so it can lay flat, and I can use it as an overlay for cutting the fur. This means that the fur also has cuts in it, so I sewed those together to get one spherical piece.
+
+The ears were a bit simpler, as I could just wrap the fur around them and cut off the remaining fur. I attached the fur to the head and the ears with hot glue, and I also used hot glue to attach the ears to the head.
+
+Thanks to my friend Willem for helping me with pretty much all of this!
+![ears and fur](/assets/protogen/story/protogen-fur-ears.avif)
+## The problem
+June 9, 2026, The head is pretty much complete; the electronics and displays are in place, I added foam on the inside so it's comfortable to wear, and the entire thing is assembled and ready.
+
+However, I still needed one crucial part: the visor. My first idea was to make one by using a heat gun to heat up a sheet of PETG plastic and press a 3D-printed mold into it. I saw this being done on YouTube with other visors, so I thought it would work with our visor too.
+
+But when we tried it, the PETG wasn't stretching nearly enough. We couldn't get any further than a few centimeters, and when we could by heating it even more, holes started appearing in the plastic. The issue was pretty clear: our visor is way too long for this method.
+## Our saviors
+After buying a second heat gun and trying again with heat from 2 sides, and still failing, it became pretty clear that this method was not going to work.
+
+With time running out fast and comic con coming closer rapidly, we went searching desperately for a different method. Buying a visor was an option, but they were way too expensive, not even including the €40 shipping cost.
+
+Ester from DAF, who was helping us throughout this entire project, found a nearby business that specializes in everything plastics. So we sent an email hoping for the best.
+
+Luckily, they responded pretty quickly, and they were happy to help us.
+![visor machine or something](/assets/protogen/updates/cool-visor-machine.avif)
+## Making the visor
+While I was away for a few days, my friend and Ester visited the business and told them about our plans. It turned out that they have a machine perfectly fit for this type of project. They did, however, request that we fill in the (currently hollow) mold so it doesn't collapse in the vacuum that the machine creates, and we come back later with a proper mold.
+
+A few days later, we went back, with me being there too this time, to drop off the new mold. We were informed that we could pick up the visor the next Monday or Tuesday, in the week of comic con.
+
+Sadly, our mold still collapsed, but luckily, they were willing to make a new mold themselves, with the proper strength this time. Unfortunately, this did mean that we had to wait even longer, until Wednesday.
+![visor molds](/assets/protogen/story/protogen-visor-molds.avif)
+## Still making the visor
+June 17, 2026, With only 3 days left before comic con, we went to pick up the visor. To our satisfaction, the visors turned out really well!
+
+At this point, they were still clear and fully transparent, so when I got home, I got started on tinting the visors immediately, which went surprisingly smoothly.
+
+While waiting for the visor, we already ran some tests with tinting the plastic. I saw from a YouTube tutorial that we had to use a fabric dye with hot water and just leave the plastic in it for a few minutes.
+
+It, however, turned out that I bought the wrong type of dye, as I bought the dye meant for natural fibers, while we needed a dye for synthetic fibers. We figured this out after the dye had absolutely no effect on the plastic.
+
+We were luckily able to find and order the correct type of dye in time, and it arrived before the visor was ready.
+![tinting the visor](/assets/protogen/updates/protogen-visor.avif)
+## Finally done
+June 18, 2026, We were finally able to finish our protogen heads. The visor did still need to be cut a little bit in order to fit, and after I struggled way too much, my friend figured out that we could simply melt off the parts that we had to cut off.
+
+I added some final touches, like Velcro at the back of the head to easily attach and remove the power bank, and prints at the sides to make it look more complete.
+
+I also finally decided on a name for my fursona: Purple (very original ik).
+
+And by the way, if you are wondering about that other friend, he gave up on the protogen after trying to cheap out on the electronics and not being able to get them to work, so he just went to comic con with his "normal" fursuit instead.
+![photo of the final product](/assets/protogen/story/protogen-cover.avif)
+# Comic Con!!!
+June 20, 2026, It's finally time to show off our protogens! We met many amazing people and protogens and took a few selfies with others.
+
+We also got the opportunity to show off our fursuits on the cosplay catwalk, which was so cool (and a bit scary ngl)!
+
+It felt so good to finally be able to show off 4 months of work, and it was a really awesome experience!
+
+✨ The End ✨
+![photo at comic con](/assets/protogen/story/protogen-comiccon.avif)
+
+## What's next
+I am not really sure yet, but I might reuse this protogen head for HDCC winter edition this year.
+
+If I do that, these are the things that I am wanting to improve:
+- Adding body/shoulder fur
+- Cleaner aesthetic
+- Detachable visor
+- More face animations / interactive face
+## Thank You!
+Thanks to my friends Boudewijn and Willem for doing this with me!
+
+Thanks Ester from [Digital Art Factory](https://digitalartfactory.nl) for also helping us throughout this project!
+
+Thank you Harry and [L & R Plastics](https://lenrplastics.nl), for helping us create the visors!
+
+Also, shoutout to my mom for helping me with making the gloves for the outfit and for taking some really cool photos!
+
+Furthermore, thanks to [M16 Studios](https://www.thingiverse.com/M16_Studios) for designing the 3D-printable base, [Henner Zeller](https://github.com/hzeller) and the other contributors for the LED matrix script, and the people on YouTube and Reddit for the useful information!
+## Everything Used
+- [Head 3D Print](https://www.thingiverse.com/thing:4894173)
+- [Purple and Pink Longhaired Fur](https://www.fakefurshop.com)
+- [RGB LED Matrix Script](https://github.com/hzeller/rpi-rgb-led-matrix)
+- Raspberry Pi 4b
+- [Adafruit RGB Matrix Bonnet for Raspberry Pi](https://www.kiwi-electronics.com/en/adafruit-rgb-matrix-bonnet-for-raspberry-pi-3570)
+- 2x [LED matrix panel](https://www.amazon.nl/dp/B0C4F5NHPF)
+- [Power Bank 10000mAh](https://www.bol.com/nl/nl/p/siltcon-draadloze-powerbank-10000-mah-geschikt-voor-magsafe-15w-powerbanks-noodpakket-magnetisch-opladen-usb-c-22-w-usb-a-18w-led-display-universeel-telefoons-tablets-meer-ultra-dun/9300000269254427)
+- Other stuff that I already had lying around: USB cables, spray paint, glue, duct tape, Velcro, body filler, paper, 3D printer filament
+`;
 </script>
 
 <nav>
@@ -256,6 +460,16 @@ const UPDATES = [
       <p id="details-full-text"></p>
     </div>
     <div class="details-grid" id="details-grid"></div>
+  </section>
+
+  <!-- ── Story ── -->
+  <section id="story-section">
+    <div class="section-head">
+      <h2 class="section-title">The Journey</h2>
+    </div>
+    <div class="story-container anim-in" id="story-container">
+      <div class="story-content" id="story-content"></div>
+    </div>
   </section>
 
   <!-- ── Updates ── -->
@@ -344,6 +558,126 @@ if (!UPDATES.length) {
       </div>`;
     updateList.appendChild(entry);
   });
+}
+
+function renderStoryMarkdown(markdown) {
+  let html = '';
+  const lines = markdown.split('\n');
+  let inList = false;
+  let currentListType = '';
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      continue;
+    }
+
+    if (trimmed === '---') {
+      if (html && html.trim().slice(-4) !== '</p>') html += '</p>';
+      html += '<hr>';
+      if (inList) {
+        html += currentListType === 'ol' ? '</ol>' : '</ul>';
+        inList = false;
+      }
+      continue;
+    }
+
+    if (trimmed.startsWith('### ')) {
+      if (html && html.trim().slice(-4) !== '</p>') html += '</p>';
+      html += `<h3>${escapeHtml(trimmed.substring(4))}</h3>`;
+      if (inList) {
+        html += currentListType === 'ol' ? '</ol>' : '</ul>';
+        inList = false;
+      }
+      continue;
+    }
+    if (trimmed.startsWith('## ')) {
+      if (html && html.trim().slice(-4) !== '</p>') html += '</p>';
+      html += `<h2>${escapeHtml(trimmed.substring(3))}</h2>`;
+      if (inList) {
+        html += currentListType === 'ol' ? '</ol>' : '</ul>';
+        inList = false;
+      }
+      continue;
+    }
+    if (trimmed.startsWith('# ')) {
+      if (html && html.trim().slice(-4) !== '</p>') html += '</p>';
+      html += `<h1>${escapeHtml(trimmed.substring(2))}</h1>`;
+      if (inList) {
+        html += currentListType === 'ol' ? '</ol>' : '</ul>';
+        inList = false;
+      }
+      continue;
+    }
+
+    const imageMatch = trimmed.match(/^!\[([^\]]*)\]\(([^\)\s]+)\)/);
+    if (imageMatch) {
+      if (html && html.trim().slice(-4) !== '</p>') html += '</p>';
+      const alt = imageMatch[1];
+      const src = imageMatch[2];
+      html += `<img src="${src}" alt="${alt}" class="story-image story-image-center" loading="lazy">`;
+      if (inList) {
+        html += currentListType === 'ol' ? '</ol>' : '</ul>';
+        inList = false;
+      }
+      continue;
+    }
+
+    if (/^[-*+] /.test(trimmed)) {
+      if (!inList) {
+        if (html && html.trim().slice(-4) !== '</p>') html += '</p>';
+        html += '<ul>';
+        inList = true;
+        currentListType = 'ul';
+      }
+      const listContent = trimmed.replace(/^[-*+] /, '');
+      html += `<li>${parseInlineMarkdown(listContent)}</li>`;
+      continue;
+    }
+
+    if (inList) {
+      html += currentListType === 'ol' ? '</ol>' : '</ul>';
+      inList = false;
+    }
+
+    if (html && html.trim().slice(-4) !== '</p>') {
+      html += '<p>';
+    }
+    html += parseInlineMarkdown(trimmed) + '</p>';
+  }
+
+  if (inList) {
+    html += currentListType === 'ol' ? '</ol>' : '</ul>';
+  }
+
+  return html;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function parseInlineMarkdown(text) {
+  text = text.replace(/\[([^\]]+)\]\(([^\)\s]+)\)/g, (match, linkText, url) => {
+    const escaped = escapeHtml(linkText);
+    return `<a href="${url}">${escaped}</a>`;
+  });
+
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+  text = text.replace(/([^*])\*([^*]+)\*/g, '$1<em>$2</em>');
+  text = text.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+  return text;
+}
+
+const storyContentEl = document.getElementById('story-content');
+if (storyContentEl && STORY) {
+  storyContentEl.innerHTML = renderStoryMarkdown(STORY);
 }
 
 initShared();
