@@ -14,7 +14,6 @@ const ICONS = {
 
 const NAV_TABS = [
   { label: 'Home',          url: '/' },
-  { label: 'NerdLabs AI',   url: '/nerdlabs' },
   { label: 'WaterBot',      url: '/waterbot' },
   { label: 'Protogen Head', url: '/protogen' },
 ];

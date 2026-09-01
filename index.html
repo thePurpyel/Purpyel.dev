@@ -207,25 +207,6 @@ const NERDLABS = {
     <div class="project-list" id="project-list"></div>
   </section>
 
-  <section id="nerdlabs-section">
-    <div class="section-head">
-      <h2 class="section-title">Nerdlabs AI</h2>
-    </div>
-    <div class="nerdlabs-card anim-in" id="nerdlabs-card">
-      <div class="nerdlabs-banner" id="nerdlabs-banner-el">
-        <div class="nerdlabs-banner-placeholder">NerdLabs AI</div>
-      </div>
-      <div class="nerdlabs-body">
-        <div class="nerdlabs-label">// organization</div>
-        <h3 class="nerdlabs-title" id="nerdlabs-title-el">—</h3>
-        <p class="nerdlabs-desc" id="nerdlabs-desc-el">—</p>
-        <a class="project-btn" id="nerdlabs-link-el">
-          More info <img src="/assets/arrow-right.svg">
-        </a>
-      </div>
-    </div>
-  </section>
-
 </main>
 
 <footer>
@@ -272,14 +253,6 @@ PROJECTS.forEach(p => {
     </div>`;
   list.appendChild(card);
 });
-
-document.getElementById('nerdlabs-title-el').textContent = NERDLABS.title;
-document.getElementById('nerdlabs-desc-el').textContent  = NERDLABS.desc;
-document.getElementById('nerdlabs-link-el').href         = NERDLABS.url;
-if (NERDLABS.banner) {
-  document.getElementById('nerdlabs-banner-el').innerHTML =
-    `<img src="${NERDLABS.banner}" alt="NerdLabs AI banner">`;
-}
 
 initShared();
 </script>
