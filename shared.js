@@ -14,8 +14,8 @@ const ICONS = {
 
 const NAV_TABS = [
   { label: 'Home',          url: '/' },
+  { label: 'Protogen Fursuit', url: '/protogen' },
   { label: 'WaterBot',      url: '/waterbot' },
-  { label: 'Protogen Head', url: '/protogen' },
 ];
 
 function initShared() {
