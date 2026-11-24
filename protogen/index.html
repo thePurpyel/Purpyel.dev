@@ -8,6 +8,32 @@
 <link rel="stylesheet" href="/shared.css">
 
 <style>
+    .subpage-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        flex-wrap: wrap;
+        background: rgba(10, 10, 40, 0.7);
+        border: 3px ridge #7c5cfc;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .subpage-banner-text {
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .subpage-banner-label {
+        color: #ff00ff;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-right: 8px;
+    }
+
     /* details */
     .details-full {
         background: rgba(10, 10, 40, 0.7);
@@ -256,7 +282,8 @@
         .detail-card,
         .details-full,
         .update-card,
-        .story-container {
+        .story-container,
+        .subpage-banner {
             padding: 12px;
             border-width: 2px;
         }
@@ -328,6 +355,15 @@
                     <p id="banner-desc-el">—</p>
                 </div>
             </div>
+        </div>
+
+        <!-- winter upgrade subpage -->
+        <div class="subpage-banner">
+            <p class="subpage-banner-text">
+                <span class="subpage-banner-label">NEW!!!✨</span>
+                Purple just got some brand new upgrades for HDCC winter 2026!! check it out!
+            </p>
+            <a class="project-link" href="/protogen/winter-upgrade">I LOVE NEW STUFF</a>
         </div>
 
         <hr>

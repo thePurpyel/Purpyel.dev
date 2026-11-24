@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protogen — Purpyel</title>
+<link rel="icon" type="image/png" href="/assets/purpyel-logo.svg">
+<link rel="stylesheet" href="/shared.css">
+
+<style>
+    /* details */
+    .details-full {
+        background: rgba(10, 10, 40, 0.7);
+        border: 3px ridge #7c5cfc;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .details-full-label,
+    .detail-card-label {
+        color: #ff00ff;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+
+    .details-full p {
+        font-size: 14px;
+        margin: 8px 0;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .detail-card {
+        background: rgba(10, 10, 40, 0.7);
+        border: 3px ridge #7c5cfc;
+        padding: 15px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .detail-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(153,0,255,0.25);
+    }
+
+    .detail-card-value {
+        color: #e8e8f0;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    /* features */
+    .feature-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 20px;
+        align-items: start;
+    }
+
+    .feature-card {
+        background: rgba(10, 10, 40, 0.7);
+        border: 3px ridge #7c5cfc;
+        padding: 15px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .feature-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(153,0,255,0.25);
+    }
+
+    /* images keep their original aspect ratio, they are only scaled down */
+    .feature-img {
+        display: block;
+        max-width: 100%;
+        max-height: 420px;
+        width: auto;
+        height: auto;
+        margin: 10px auto;
+        border: 2px solid #8888a4;
+    }
+
+    .feature-title {
+        color: #e8e8f0;
+        font-size: 22px;
+        margin: 0 0 10px 0;
+    }
+
+    .feature-desc {
+        font-size: 14px;
+        margin: 8px 0;
+    }
+
+    .empty-note {
+        background: rgba(10, 10, 40, 0.7);
+        border: 3px ridge #7c5cfc;
+        padding: 15px;
+        text-align: center;
+        color: #8888a4;
+    }
+
+    /* notes / markdown */
+    .story-container {
+        background: rgba(10, 10, 40, 0.7);
+        border: 3px ridge #7c5cfc;
+        padding: 20px;
+    }
+
+    .story-content {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .story-content h1 {
+        color: #e8e8f0;
+        font-size: 32px;
+        text-shadow: 3px 3px 0 #9900ff, -3px -3px 0 #7c5cfc;
+        letter-spacing: 2px;
+        margin: 30px 0 12px 0;
+    }
+
+    .story-content h2 {
+        color: #00ffff;
+        font-size: 24px;
+        text-shadow: 2px 2px 0 #ff00ff;
+        margin: 30px 0 10px 0;
+    }
+
+    .story-content h3,
+    .story-content h4,
+    .story-content h5,
+    .story-content h6 {
+        color: #e8e8f0;
+        font-size: 18px;
+        margin: 20px 0 8px 0;
+    }
+
+    .story-content p {
+        margin: 10px 0;
+    }
+
+    .story-content a {
+        color: #00ffff;
+        text-decoration: underline;
+    }
+
+    .story-content a:hover {
+        background: rgba(0,0,0,0.3);
+    }
+
+    .story-content strong,
+    .story-content b {
+        color: #ffff00;
+    }
+
+    .story-content em,
+    .story-content i {
+        color: #8888a4;
+    }
+
+    .story-content code {
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid #9900ff;
+        padding: 1px 5px;
+    }
+
+    .story-content pre {
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 2px solid #9900ff;
+        padding: 10px;
+        overflow-x: auto;
+        margin: 10px 0;
+    }
+
+    .story-content pre code {
+        background: none;
+        border: none;
+        padding: 0;
+    }
+
+    .story-content ul,
+    .story-content ol {
+        padding-left: 30px;
+        margin: 10px 0;
+    }
+
+    .story-content li {
+        margin: 5px 0;
+    }
+
+    .story-content blockquote {
+        background: rgba(0, 0, 0, 0.6);
+        border-left: 4px solid #9900ff;
+        padding: 10px;
+        margin: 10px 0;
+    }
+
+    .story-content hr {
+        border: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #ff00ff, #00ffff, #ffff00, transparent);
+        margin: 20px 0;
+    }
+
+    .story-image {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        border: 3px solid #8888a4;
+        margin: 15px 0;
+    }
+
+    .story-image-center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* planned list */
+    .planned-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .planned-item {
+        background: rgba(10, 10, 40, 0.7);
+        border: 3px ridge #7c5cfc;
+        padding: 12px 15px;
+        font-size: 14px;
+        color: #e8e8f0;
+    }
+
+    .planned-item .planned-state {
+        color: #ff00ff;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-right: 10px;
+    }
+
+    /* back link */
+    .back-row {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* mobile support */
+    @media (max-width: 768px) {
+        .details-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .feature-list {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .detail-card,
+        .details-full,
+        .feature-card,
+        .story-container,
+        .planned-item {
+            padding: 12px;
+            border-width: 2px;
+        }
+
+        .story-content {
+            font-size: 14px;
+        }
+
+        .story-content h1 {
+            font-size: 24px;
+            text-shadow: 2px 2px 0 #9900ff, -2px -2px 0 #7c5cfc;
+        }
+
+        .story-content h2 {
+            font-size: 20px;
+        }
+
+        .story-content ul,
+        .story-content ol {
+            padding-left: 20px;
+        }
+
+        .feature-title {
+            font-size: 18px;
+        }
+    }
+</style>
+</head>
+<body>
+    <!-- random stuff idk -->
+    <div class="random-float" style="top: 15%; left: 5%;">
+        <img src="https://i.pinimg.com/736x/de/ad/02/dead02d20c50c73eafbbf689ab653f77.jpg" alt="Random decorative image">
+    </div>
+    <div class="random-float" style="top: 60%; left: 80%;">
+        <img src="https://i.pinimg.com/1200x/83/5e/67/835e67434f89283dd160d91f7042bf27.jpg" alt="Random decorative image">
+    </div>
+    <div class="random-float" style="top: 40%; left: 10%;">
+        <span class="emoji">✨</span>
+    </div>
+    <div class="random-float" style="top: 20%; right: 15%;">
+        <img src="https://i.pinimg.com/736x/8c/8b/f9/8c8bf9a3a1add0f0863fe78ad11a3b6f.jpg" alt="Random decorative image">
+    </div>
+
+    <!-- navigation bar -->
+    <div class="topbar">
+        <a href="/">HOME</a>
+        <a href="/protogen">PROTOGEN FURSUIT</a>
+        <a href="/waterbot">WATERBOT</a>
+    </div>
+
+    <!-- scrolly thing -->
+    <marquee behavior="scroll" direction="left">
+        WELCOME!!! &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; YOU ARE AWESOME &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; NOW WITH HTML 5 &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; MEOW MEOW MEOW MEOW MEOW &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; MIKU FOREVER &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; I USE ARCH BTW &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; JOIN THE FURRY COMMUNITY NOW &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; THIS WEBSITE IS RUNNING ON HOPES AND PRAYERS &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; FUCK IPV6 &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; I LIKE MINECRAFT &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; SNUFFLES IS THE BEST ARTIST
+    </marquee>
+
+    <!-- main container -->
+    <div class="container">
+        <!-- back link -->
+        <div class="back-row">
+            <a class="project-link" href="/protogen">&lt;&lt; BACK TO THE PROTOGEN PAGE</a>
+        </div>
+
+        <!-- header -->
+        <div class="header">
+            <img id="banner-img-el" src="/assets/protogen-square.avif" alt="Protogen fursuit">
+            <div class="header-content">
+                <h1 id="banner-title-el">Protogen Fursuit</h1>
+                <p class="fun-text" id="banner-tag-el">winter upgrade</p>
+                <div class="about-text">
+                    <p id="banner-desc-el">—</p>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- details -->
+        <h2 class="section-title" id="details-section">ABOUT</h2>
+
+        <div class="details-full" id="details-full" style="display:none">
+            <div class="details-full-label">overview</div>
+            <p id="details-full-text"></p>
+        </div>
+        <div class="details-grid" id="details-grid"></div>
+
+        <hr>
+
+        <!-- features -->
+        <h2 class="section-title" id="features-section">WHAT'S NEW</h2>
+
+        <div class="feature-list" id="feature-list"></div>
+
+        <hr>
+
+        <!-- notes -->
+        <h2 class="section-title" id="notes-section">WHAT NOW?</h2>
+
+        <div class="story-container" id="story-container">
+            <div class="story-content" id="story-content"></div>
+        </div>
+
+        <hr>
+
+        <!-- footer -->
+        <div class="footer">
+            <h3>FIND ME ON THE INTERWEBS</h3>
+            <div class="social-links">
+                <a href="https://github.com/thePurpyel" title="check out my shit">GitHub</a>
+                <a href="https://web.fluxer.app/users/1552606074001948672" title="talk to me :D">Fluxer</a>
+                <a href="https://ko-fi.com/purpyel" title="gimme money">Ko-fi</a>
+            </div>
+            <p>Email: <a href="mailto:purp@purpyel.dev">purp@purpyel.dev</a></p>
+            <div class="fun-text" style="margin-top: 15px;">
+                mew :3
+            </div>
+            <div class="footer-credits">
+                Purpyel | &copy; 2026 | MIT License
+            </div>
+        </div>
+    </div>
+
+    <!-- more random stuff -->
+    <div class="random-float" style="bottom: 100px; left: 20%;">
+        <img src="https://i.pinimg.com/1200x/96/91/b3/9691b35bfab61b0314f111c079d90dce.jpg" alt="Random">
+    </div>
+    <div class="random-float" style="bottom: 0%; left: 90%;">
+        <span class="emoji">❤️</span>
+    </div>
+    <div class="random-float" style="bottom: 50px; left: 70%;">
+        <img src="https://i.pinimg.com/736x/5d/3f/3c/5d3f3c24d384c30d88e67279c85c98c6.jpg" alt="Random">
+    </div>
+    <div class="random-float" style="bottom: 20px; left: 10%;">
+        <img src="/assets/random//pride.avif" alt="Random">
+    </div>
+
+    <script src="/shared.js"></script>
+
+    <script>
+const PROJECT = {
+  tag:      'winter upgrade',
+  title:    'Protogen Fursuit',
+  desc:     'brand new features for hdcc winter 2026!!',
+  image:    '/assets/protogen/winter-upgrade/protogen-new.avif',
+  status:   '',
+  event:    '',
+  tech:     '',
+  details:  "Since the protogen managed to survive the summer edition without getting obliterated, i decided to reuse it for the winter edition and add some features that i didn't have time to add to the summer edition. Purple is now controllable on-the-go from a smartphone, and more!",
+};
+
+const FEATURES = [
+    {
+    title: 'Phone Control Panel',
+    desc:  "By far the biggest upgrade yet: A control panel that's accessible from a phone! This way i am able to control the protogen on-the-go. It features a panel to switch faces, image uploading and auto-scaling to add new faces, sleep mode to save power without completely shutting down and system controls. I'm working on a public release of the software, so anyone can build their own protogen without having to mess around with annoying software. More on that coming soon!",
+    image: '/assets/protogen/winter-upgrade/protoOS.avif',
+    },
+    {
+    title: 'Upgraded Paws',
+    desc:  "I ugraded the paws because the old ones kinda sucked. My initial plan was to make entirely new paws but i quicky realized how fucking annoying sewing is so i gave up and decided to just upgrade the old ones instead. I added new, 3D printed, claws and i made the paws a little puffier. They still don't look very professional, but it's the best i could do without fighting with a needle and thread.",
+    image: '/assets/protogen/winter-upgrade/new-paws.avif',
+    },
+    {
+    title: 'Head Upgrades',
+    desc:  "I made a few minor upgrades to the physical head. Most importantly, the visor is now easily removable. Rather than being glued down, it can now be removed or attached with screws. I also managed the cables more tightly. No more ugly wires sticking out the back. There's also a little more breathing room at the front, although cables are still pressing on my nose :/",
+    image: '/assets/protogen/winter-upgrade/head-upgrades.avif',
+    },
+];
+
+const NOTES = `
+Probably nothing.
+
+I am probably gonna end this project here. I want to make a new cosplay for the next comic con.
+I am of course gonna keep this protogen, and i might use it for other smaller cosplay events in the coming months. Don't expect any major upgrades though.
+`;
+
+/* ── Render header ── */
+document.getElementById('banner-title-el').textContent = PROJECT.title;
+document.getElementById('banner-desc-el').textContent  = PROJECT.desc;
+document.getElementById('banner-tag-el').textContent   = PROJECT.tag.toLowerCase();
+
+if (PROJECT.image) {
+  document.getElementById('banner-img-el').src = PROJECT.image;
+}
+
+/* ── Render details ── */
+const detailFields = [
+  { label: 'status',   value: PROJECT.status },
+  { label: 'event',    value: PROJECT.event },
+  { label: 'tech',     value: PROJECT.tech },
+].filter(f => f.value);
+
+const grid = document.getElementById('details-grid');
+detailFields.forEach(f => {
+  const card = document.createElement('div');
+  card.className = 'detail-card';
+  card.innerHTML = `<div class="detail-card-label">${f.label}</div><div class="detail-card-value">${f.value}</div>`;
+  grid.appendChild(card);
+});
+
+if (PROJECT.details) {
+  const fullEl = document.getElementById('details-full');
+  document.getElementById('details-full-text').textContent = PROJECT.details;
+  fullEl.style.display = '';
+}
+
+/* ── Render features ── */
+const featureList = document.getElementById('feature-list');
+if (!FEATURES.length) {
+  featureList.innerHTML = `<div class="empty-note">Nothing written down yet — come back soon or edit this page yourself :3</div>`;
+} else {
+  FEATURES.forEach(f => {
+    const card = document.createElement('div');
+    card.className = 'feature-card';
+    card.innerHTML = `
+      ${f.image ? `<img class="feature-img" src="${f.image}" alt="${f.title}" loading="lazy">` : ''}
+      <h3 class="feature-title">${f.title}</h3>
+      <p class="feature-desc">${f.desc}</p>`;
+    featureList.appendChild(card);
+  });
+}
+
+/* ── Render notes (markdown) ── */
+function renderStoryMarkdown(markdown) {
+  let html = '';
+  const lines = markdown.split('\n');
+  let inList = false;
+  let currentListType = '';
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      continue;
+    }
+
+    if (trimmed === '---') {
+      if (html && html.trim().slice(-4) !== '</p>') html += '</p>';
+      html += '<hr>';
+      if (inList) {
+        html += currentListType === 'ol' ? '</ol>' : '</ul>';
+        inList = false;
+      }
+      continue;
+    }
+
+    if (trimmed.startsWith('### ')) {
+      if (html && html.trim().slice(-4) !== '</p>') html += '</p>';
+      html += `<h3>${escapeHtml(trimmed.substring(4))}</h3>`;
+      if (inList) {
+        html += currentListType === 'ol' ? '</ol>' : '</ul>';
+        inList = false;
+      }
+      continue;
+    }
+    if (trimmed.startsWith('## ')) {
+      if (html && html.trim().slice(-4) !== '</p>') html += '</p>';
+      html += `<h2>${escapeHtml(trimmed.substring(3))}</h2>`;
+      if (inList) {
+        html += currentListType === 'ol' ? '</ol>' : '</ul>';
+        inList = false;
+      }
+      continue;
+    }
+    if (trimmed.startsWith('# ')) {
+      if (html && html.trim().slice(-4) !== '</p>') html += '</p>';
+      html += `<h1>${escapeHtml(trimmed.substring(2))}</h1>`;
+      if (inList) {
+        html += currentListType === 'ol' ? '</ol>' : '</ul>';
+        inList = false;
+      }
+      continue;
+    }
+
+    const imageMatch = trimmed.match(/^!\[([^\]]*)\]\(([^\)\s]+)\)/);
+    if (imageMatch) {
+      if (html && html.trim().slice(-4) !== '</p>') html += '</p>';
+      const alt = imageMatch[1];
+      const src = imageMatch[2];
+      html += `<img src="${src}" alt="${alt}" class="story-image story-image-center" loading="lazy">`;
+      if (inList) {
+        html += currentListType === 'ol' ? '</ol>' : '</ul>';
+        inList = false;
+      }
+      continue;
+    }
+
+    if (/^[-*+] /.test(trimmed)) {
+      if (!inList) {
+        if (html && html.trim().slice(-4) !== '</p>') html += '</p>';
+        html += '<ul>';
+        inList = true;
+        currentListType = 'ul';
+      }
+      const listContent = trimmed.replace(/^[-*+] /, '');
+      html += `<li>${parseInlineMarkdown(listContent)}</li>`;
+      continue;
+    }
+
+    if (inList) {
+      html += currentListType === 'ol' ? '</ol>' : '</ul>';
+      inList = false;
+    }
+
+    if (html && html.trim().slice(-4) !== '</p>') {
+      html += '<p>';
+    }
+    html += parseInlineMarkdown(trimmed) + '</p>';
+  }
+
+  if (inList) {
+    html += currentListType === 'ol' ? '</ol>' : '</ul>';
+  }
+
+  return html;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function parseInlineMarkdown(text) {
+  text = text.replace(/\[([^\]]+)\]\(([^\)\s]+)\)/g, (match, linkText, url) => {
+    const escaped = escapeHtml(linkText);
+    return `<a href="${url}">${escaped}</a>`;
+  });
+
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+  text = text.replace(/([^*])\*([^*]+)\*/g, '$1<em>$2</em>');
+  text = text.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+  return text;
+}
+
+const storyContentEl = document.getElementById('story-content');
+if (storyContentEl && NOTES) {
+  storyContentEl.innerHTML = renderStoryMarkdown(NOTES);
+}
+    </script>
+</body>
+</html>
