@@ -5,199 +5,396 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Protogen — Purpyel</title>
 <link rel="icon" type="image/png" href="/assets/purpyel-logo.svg">
-<link rel="stylesheet" href="/shared-old.css">
+<link rel="stylesheet" href="/shared.css">
 
 <style>
-  /* ── Details grid ── */
-  #details-section { margin-bottom: 4rem; }
-  .details-full {
-    margin-bottom: 1rem;
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.6rem 1.8rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  }
-  .details-full-label {
-    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--accent); opacity: 0.8;
-    font-family: 'Azeret Mono', monospace; margin-bottom: 0.7rem;
-  }
-  .details-full p { color: var(--muted); font-size: 13.5px; line-height: 1.9; }
+    /* details */
+    .details-full {
+        background: rgba(10, 10, 40, 0.7);
+        border: 3px ridge #7c5cfc;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
 
-  .details-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
-  }
-  .detail-card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.4rem 1.6rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-    transition: border-color 0.2s;
-  }
-  .detail-card:hover { border-color: rgba(153,0,255,0.25); }
-  .detail-card-label {
-    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--accent); opacity: 0.8;
-    font-family: 'Azeret Mono', monospace; margin-bottom: 0.4rem;
-  }
-  .detail-card-value {
-    font-family: 'Josefin Sans', sans-serif;
-    font-size: 1.1rem; font-weight: 600; color: var(--text); line-height: 1.4;
-  }
+    .details-full-label,
+    .detail-card-label {
+        color: #ff00ff;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
 
-  /* ── Story section ── */
-  #story-section { margin-bottom: 4rem; }
-  .story-container {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.8rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  }
-  .story-content {
-    font-size: 14px; line-height: 1.8; color: var(--muted);
-  }
-  .story-content h1,
-  .story-content h2,
-  .story-content h3,
-  .story-content h4,
-  .story-content h5,
-  .story-content h6 {
-    font-family: 'Josefin Sans', sans-serif; color: var(--text);
-    margin-top: 1.8em; margin-bottom: 0.8em;
-  }
-  .story-content h1 { font-size: 2rem; font-weight: 700; }
-  .story-content h2 { font-size: 1.65rem; font-weight: 700; }
-  .story-content h3 { font-size: 1.4rem; font-weight: 600; }
-  .story-content h4 { font-size: 1.2rem; font-weight: 600; }
-  .story-content p {
-    margin-bottom: 1.2em;
-  }
-  .story-content a {
-    color: var(--accent); text-decoration: none;
-    transition: opacity 0.2s;
-  }
-  .story-content a:hover { opacity: 0.8; }
-  .story-content strong, .story-content b { color: var(--text); font-weight: 600; }
-  .story-content em, .story-content i { font-style: italic; opacity: 0.9; }
-  .story-content code {
-    font-family: 'Azeret Mono', monospace; font-size: 12.5px;
-    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-    border-radius: 4px; padding: 0.1em 0.4em;
-  }
-  .story-content pre {
-    font-family: 'Azeret Mono', monospace; font-size: 12.5px;
-    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.2rem;
-    overflow-x: auto; margin-bottom: 1.2em;
-  }
-  .story-content pre code { background: none; border: none; padding: 0; }
-  .story-content ul,
-  .story-content ol {
-    margin-bottom: 1.2em; padding-left: 2em;
-  }
-  .story-content li { margin-bottom: 0.4em; }
-  .story-content blockquote {
-    border-left: 3px solid var(--accent); padding-left: 1rem;
-    margin-left: 0; margin-bottom: 1.2em;
-    color: var(--muted); opacity: 0.8;
-    font-style: italic;
-  }
-  .story-content hr {
-    border: none; border-top: 1px solid var(--border);
-    margin: 2em 0;
-  }
-  .story-image {
-    width: 100%; max-width: 100%; height: auto;
-    border-radius: var(--radius); margin: 1.5em 0;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-  }
-  .story-image-center {
-    display: block; margin-left: auto; margin-right: auto;
-  }
+    .details-full p {
+        font-size: 14px;
+        margin: 8px 0;
+    }
 
-  /* ── Updates timeline ── */
-  #updates-section { margin-bottom: 4rem; }
-  .update-list {
-    display: flex; flex-direction: column; gap: 0;
-    position: relative;
-  }
-  .update-list::before {
-    content: '';
-    position: absolute; left: 18px; top: 24px; bottom: 24px;
-    width: 2px;
-    background: linear-gradient(to bottom, var(--accent) 0%, rgba(124,92,252,0.12) 100%);
-    border-radius: 2px; opacity: 0.3;
-  }
-  .update-entry {
-    display: grid; grid-template-columns: 38px 1fr;
-    gap: 1.2rem; align-items: start;
-    padding-bottom: 2rem; position: relative;
-  }
-  .update-entry:last-child { padding-bottom: 0; }
-  .update-dot-col {
-    display: flex; flex-direction: column;
-    align-items: center; padding-top: 4px; flex-shrink: 0;
-  }
-  .update-dot {
-    width: 14px; height: 14px; border-radius: 50%;
-    background: var(--accent2); border: 2px solid var(--bg);
-    box-shadow: 0 0 8px rgba(124,92,252,0.5);
-    flex-shrink: 0; z-index: 1; position: relative;
-  }
-  .update-card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius); overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-  }
-  .update-card:hover {
-    border-color: rgba(153,0,255,0.3); transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.28);
-  }
-  .update-img-wrap { height: 300px; overflow: hidden; position: relative; }
-  .update-img-wrap img {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-    transition: transform 0.35s ease;
-  }
-  .update-card:hover .update-img-wrap img { transform: scale(1.04); }
-  .update-body { padding: 1.3rem 1.5rem; }
-  .update-meta {
-    display: flex; align-items: center; gap: 0.75rem;
-    margin-bottom: 0.5rem; flex-wrap: wrap;
-  }
-  .update-date {
-    font-size: 11px; letter-spacing: 0.07em;
-    color: var(--accent); font-family: 'Azeret Mono', monospace; opacity: 0.8;
-  }
-  .update-num {
-    font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase;
-    color: var(--muted); font-family: 'Azeret Mono', monospace;
-    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-    border-radius: 20px; padding: 1px 8px;
-  }
-  .update-title {
-    font-family: 'Josefin Sans', sans-serif;
-    font-size: 1.35rem; font-weight: 700;
-    letter-spacing: 0.01em; line-height: 1.2;
-    margin-bottom: 0.6rem; color: var(--text);
-  }
-  .update-desc { color: var(--muted); font-size: 13px; line-height: 1.85; }
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
 
-  .updates-empty {
-    background: var(--bg2); border: 1.5px dashed rgba(255,255,255,0.08);
-    border-radius: var(--radius); padding: 2.5rem;
-    text-align: center; color: var(--muted); font-size: 13px; opacity: 0.7;
-  }
+    .detail-card {
+        background: rgba(10, 10, 40, 0.7);
+        border: 3px ridge #7c5cfc;
+        padding: 15px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
 
-  @media (max-width: 640px) {
-    .details-grid { grid-template-columns: 1fr; }
-    .update-list::before { left: 14px; }
-    .update-entry { grid-template-columns: 30px 1fr; gap: 0.8rem; }
-  }
+    .detail-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(153,0,255,0.25);
+    }
+
+    .detail-card-value {
+        color: #e8e8f0;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    /* story */
+    .story-container {
+        background: rgba(10, 10, 40, 0.7);
+        border: 3px ridge #7c5cfc;
+        padding: 20px;
+    }
+
+    .story-content {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .story-content h1 {
+        color: #e8e8f0;
+        font-size: 32px;
+        text-shadow: 3px 3px 0 #9900ff, -3px -3px 0 #7c5cfc;
+        letter-spacing: 2px;
+        margin: 30px 0 12px 0;
+    }
+
+    .story-content h2 {
+        color: #00ffff;
+        font-size: 24px;
+        text-shadow: 2px 2px 0 #ff00ff;
+        margin: 30px 0 10px 0;
+    }
+
+    .story-content h3,
+    .story-content h4,
+    .story-content h5,
+    .story-content h6 {
+        color: #e8e8f0;
+        font-size: 18px;
+        margin: 20px 0 8px 0;
+    }
+
+    .story-content p {
+        margin: 10px 0;
+    }
+
+    .story-content a {
+        color: #00ffff;
+        text-decoration: underline;
+    }
+
+    .story-content a:hover {
+        background: rgba(0,0,0,0.3);
+    }
+
+    .story-content strong,
+    .story-content b {
+        color: #ffff00;
+    }
+
+    .story-content em,
+    .story-content i {
+        color: #8888a4;
+    }
+
+    .story-content code {
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid #9900ff;
+        padding: 1px 5px;
+    }
+
+    .story-content pre {
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 2px solid #9900ff;
+        padding: 10px;
+        overflow-x: auto;
+        margin: 10px 0;
+    }
+
+    .story-content pre code {
+        background: none;
+        border: none;
+        padding: 0;
+    }
+
+    .story-content ul,
+    .story-content ol {
+        padding-left: 30px;
+        margin: 10px 0;
+    }
+
+    .story-content li {
+        margin: 5px 0;
+    }
+
+    .story-content blockquote {
+        background: rgba(0, 0, 0, 0.6);
+        border-left: 4px solid #9900ff;
+        padding: 10px;
+        margin: 10px 0;
+    }
+
+    .story-content hr {
+        border: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #ff00ff, #00ffff, #ffff00, transparent);
+        margin: 20px 0;
+    }
+
+    .story-image {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        border: 3px solid #8888a4;
+        margin: 15px 0;
+    }
+
+    .story-image-center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* updates */
+    .update-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .update-card {
+        background: rgba(10, 10, 40, 0.7);
+        border: 3px ridge #7c5cfc;
+        padding: 15px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .update-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(153,0,255,0.25);
+    }
+
+    .update-img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border: 2px solid #8888a4;
+        margin: 10px 0;
+    }
+
+    .update-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+    }
+
+    .update-date {
+        color: #00ffff;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .update-num {
+        color: #ff00ff;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .update-title {
+        color: #e8e8f0;
+        font-size: 22px;
+        margin: 0 0 10px 0;
+    }
+
+    .update-desc {
+        font-size: 14px;
+        margin: 8px 0;
+    }
+
+    .updates-empty {
+        background: rgba(10, 10, 40, 0.7);
+        border: 3px ridge #7c5cfc;
+        padding: 15px;
+        text-align: center;
+        color: #8888a4;
+    }
+
+    /* mobile support */
+    @media (max-width: 768px) {
+        .details-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .detail-card,
+        .details-full,
+        .update-card,
+        .story-container {
+            padding: 12px;
+            border-width: 2px;
+        }
+
+        .story-content {
+            font-size: 14px;
+        }
+
+        .story-content h1 {
+            font-size: 24px;
+            text-shadow: 2px 2px 0 #9900ff, -2px -2px 0 #7c5cfc;
+        }
+
+        .story-content h2 {
+            font-size: 20px;
+        }
+
+        .story-content ul,
+        .story-content ol {
+            padding-left: 20px;
+        }
+
+        .update-title {
+            font-size: 18px;
+        }
+
+        .update-img {
+            max-height: 200px;
+        }
+    }
 </style>
 </head>
 <body>
+    <!-- random stuff idk -->
+    <div class="random-float" style="top: 15%; left: 5%;">
+        <img src="https://i.pinimg.com/736x/de/ad/02/dead02d20c50c73eafbbf689ab653f77.jpg" alt="Random decorative image">
+    </div>
+    <div class="random-float" style="top: 60%; left: 80%;">
+        <img src="https://i.pinimg.com/1200x/83/5e/67/835e67434f89283dd160d91f7042bf27.jpg" alt="Random decorative image">
+    </div>
+    <div class="random-float" style="top: 40%; left: 10%;">
+        <span class="emoji">✨</span>
+    </div>
+    <div class="random-float" style="top: 20%; right: 15%;">
+        <img src="https://i.pinimg.com/736x/8c/8b/f9/8c8bf9a3a1add0f0863fe78ad11a3b6f.jpg" alt="Random decorative image">
+    </div>
 
-<!-- ── Config ── -->
-<script src="/shared-old.js"></script>
-<script>
+    <!-- navigation bar -->
+    <div class="topbar">
+        <a href="/">HOME</a>
+        <a href="/protogen">PROTOGEN FURSUIT</a>
+        <a href="/waterbot">WATERBOT</a>
+    </div>
+
+    <!-- scrolly thing -->
+    <marquee behavior="scroll" direction="left">
+        WELCOME!!! &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; YOU ARE AWESOME &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; NOW WITH HTML 5 &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; MEOW MEOW MEOW MEOW MEOW &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; MIKU FOREVER &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; I USE ARCH BTW &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; JOIN THE FURRY COMMUNITY NOW &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; THIS WEBSITE IS RUNNING ON HOPES AND PRAYERS &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; FUCK IPV6 &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; I LIKE MINECRAFT &emsp;&emsp;&emsp;***&emsp;&emsp;&emsp; SNUFFLES IS THE BEST ARTIST
+    </marquee>
+
+    <!-- main container -->
+    <div class="container">
+        <!-- header -->
+        <div class="header">
+            <img id="banner-img-el" src="/assets/protogen-square.avif" alt="Protogen fursuit">
+            <div class="header-content">
+                <h1 id="banner-title-el">Protogen Fursuit</h1>
+                <p class="fun-text" id="banner-tag-el">cosplay</p>
+                <div class="about-text">
+                    <p id="banner-desc-el">—</p>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- details -->
+        <h2 class="section-title" id="details-section">ABOUT</h2>
+
+        <div class="details-full" id="details-full" style="display:none">
+            <div class="details-full-label">overview</div>
+            <p id="details-full-text"></p>
+        </div>
+        <div class="details-grid" id="details-grid"></div>
+
+        <hr>
+
+        <!-- story -->
+        <h2 class="section-title" id="story-section">THE JOURNEY</h2>
+
+        <div class="story-container" id="story-container">
+            <div class="story-content" id="story-content"></div>
+        </div>
+
+        <hr>
+
+        <!-- updates -->
+        <h2 class="section-title" id="updates-section">UPDATES (OLD)</h2>
+
+        <div class="update-list" id="update-list"></div>
+
+        <hr>
+
+        <!-- footer -->
+        <div class="footer">
+            <h3>FIND ME ON THE INTERWEBS</h3>
+            <div class="social-links">
+                <a href="https://github.com/thePurpyel" title="check out my shit">GitHub</a>
+                <a href="https://web.fluxer.app/users/1552606074001948672" title="talk to me :D">Fluxer</a>
+                <a href="https://ko-fi.com/purpyel" title="gimme money">Ko-fi</a>
+            </div>
+            <p>Email: <a href="mailto:purp@purpyel.dev">purp@purpyel.dev</a></p>
+            <div class="fun-text" style="margin-top: 15px;">
+                mew :3
+            </div>
+            <div class="footer-credits">
+                Purpyel | &copy; 2026 | MIT License
+            </div>
+        </div>
+    </div>
+
+    <!-- more random stuff -->
+    <div class="random-float" style="bottom: 100px; left: 20%;">
+        <img src="https://i.pinimg.com/1200x/96/91/b3/9691b35bfab61b0314f111c079d90dce.jpg" alt="Random">
+    </div>
+    <div class="random-float" style="bottom: 0%; left: 90%;">
+        <span class="emoji">❤️</span>
+    </div>
+    <div class="random-float" style="bottom: 50px; left: 70%;">
+        <img src="https://i.pinimg.com/736x/5d/3f/3c/5d3f3c24d384c30d88e67279c85c98c6.jpg" alt="Random">
+    </div>
+    <div class="random-float" style="bottom: 20px; left: 10%;">
+        <img src="/assets/random//pride.avif" alt="Random">
+    </div>
+
+    <script src="/shared.js"></script>
+
+    <script>
+/* ── Config ── */
 const PROJECT = {
   tag:      'Cosplay',
   title:    'Protogen Fursuit',
@@ -419,90 +616,14 @@ Furthermore, thanks to [M16 Studios](https://www.thingiverse.com/M16_Studios) fo
 - [Power Bank 10000mAh](https://www.bol.com/nl/nl/p/siltcon-draadloze-powerbank-10000-mah-geschikt-voor-magsafe-15w-powerbanks-noodpakket-magnetisch-opladen-usb-c-22-w-usb-a-18w-led-display-universeel-telefoons-tablets-meer-ultra-dun/9300000269254427)
 - Other stuff that I already had lying around: USB cables, spray paint, glue, duct tape, Velcro, body filler, paper, 3D printer filament
 `;
-</script>
 
-<nav>
-  <a href="/" class="nav-logo">
-    <img src="/assets/purpyel-logo.svg" alt="Purpyel">
-  </a>
-  <div class="nav-tabs" id="nav-tabs"></div>
-  <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-<div class="nav-mobile-menu" id="nav-mobile-menu" aria-hidden="true">
-  <div id="nav-mobile-inner"></div>
-</div>
-
-<main>
-
-  <!-- ── Hero ── -->
-  <section id="banner-section">
-    <div class="hero anim-in">
-      <div class="hero-left">
-        <h1 class="hero-title" id="banner-title-el">—</h1>
-        <p class="hero-subtitle" id="banner-desc-el">—</p>
-      </div>
-      <div class="hero-logo" id="banner-img-el">
-        <span class="hero-logo-placeholder">P</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Details ── -->
-  <section id="details-section">
-    <div class="section-head">
-      <h2 class="section-title">About</h2>
-    </div>
-    <div class="details-full anim-in" id="details-full" style="display:none">
-      <div class="details-full-label">overview</div>
-      <p id="details-full-text"></p>
-    </div>
-    <div class="details-grid" id="details-grid"></div>
-  </section>
-
-  <!-- ── Story ── -->
-  <section id="story-section">
-    <div class="section-head">
-      <h2 class="section-title">The Journey</h2>
-    </div>
-    <div class="story-container" id="story-container">
-      <div class="story-content" id="story-content"></div>
-    </div>
-  </section>
-
-  <!-- ── Updates ── -->
-  <section id="updates-section">
-    <div class="section-head">
-      <h2 class="section-title">Updates (old)</h2>
-    </div>
-    <div class="update-list" id="update-list"></div>
-  </section>
-
-</main>
-
-<footer>
-  <div class="footer-brand" id="footer-brand"></div>
-  <div class="footer-links" id="footer-links"></div>
-</footer>
-
-<script>
-/* ── Render hero ── */
+/* ── Render header ── */
 document.getElementById('banner-title-el').textContent = PROJECT.title;
 document.getElementById('banner-desc-el').textContent  = PROJECT.desc;
+document.getElementById('banner-tag-el').textContent   = PROJECT.tag.toLowerCase();
 
 if (PROJECT.image) {
-  document.getElementById('banner-img-el').innerHTML =
-    `<img src="${PROJECT.image}" alt="${PROJECT.title}">`;
-}
-
-if (PROJECT.url) {
-  const a = document.createElement('a');
-  a.className = 'cta-btn cta-secondary';
-  a.href = PROJECT.url;
-  if (PROJECT.url.startsWith('http')) { a.target = '_blank'; a.rel = 'noopener'; }
-  a.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub`;
-  ctaRow.appendChild(a);
+  document.getElementById('banner-img-el').src = PROJECT.image;
 }
 
 /* ── Render details ── */
@@ -516,7 +637,7 @@ const detailFields = [
 const grid = document.getElementById('details-grid');
 detailFields.forEach(f => {
   const card = document.createElement('div');
-  card.className = 'detail-card anim-in';
+  card.className = 'detail-card';
   card.innerHTML = `<div class="detail-card-label">${f.label}</div><div class="detail-card-value">${f.value}</div>`;
   grid.appendChild(card);
 });
@@ -533,26 +654,22 @@ if (!UPDATES.length) {
   updateList.innerHTML = `<div class="updates-empty">No updates yet — check back soon!</div>`;
 } else {
   UPDATES.forEach((u, i) => {
-    const entry = document.createElement('div');
-    entry.className = 'update-entry';
+    const card = document.createElement('div');
+    card.className = 'update-card';
     const num = String(UPDATES.length - i).padStart(2, '0');
-    entry.innerHTML = `
-      <div class="update-dot-col"><div class="update-dot"></div></div>
-      <div class="update-card anim-in">
-        ${u.image ? `<div class="update-img-wrap"><img src="${u.image}" alt="${u.title}" loading="lazy"></div>` : ''}
-        <div class="update-body">
-          <div class="update-meta">
-            <span class="update-date">${u.date}</span>
-            <span class="update-num">update #${num}</span>
-          </div>
-          <h3 class="update-title">${u.title}</h3>
-          <p class="update-desc">${u.desc}</p>
-        </div>
-      </div>`;
-    updateList.appendChild(entry);
+    card.innerHTML = `
+      ${u.image ? `<img class="update-img" src="${u.image}" alt="${u.title}" loading="lazy">` : ''}
+      <div class="update-meta">
+        <span class="update-date">${u.date}</span>
+        <span class="update-num">update #${num}</span>
+      </div>
+      <h3 class="update-title">${u.title}</h3>
+      <p class="update-desc">${u.desc}</p>`;
+    updateList.appendChild(card);
   });
 }
 
+/* ── Render story (markdown) ── */
 function renderStoryMarkdown(markdown) {
   let html = '';
   const lines = markdown.split('\n');
@@ -672,8 +789,6 @@ const storyContentEl = document.getElementById('story-content');
 if (storyContentEl && STORY) {
   storyContentEl.innerHTML = renderStoryMarkdown(STORY);
 }
-
-initShared();
-</script>
+    </script>
 </body>
 </html>
